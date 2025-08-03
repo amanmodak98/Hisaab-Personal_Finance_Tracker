@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hisaab - Personal Finance Tracker</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>🏦 Hisaab - Personal Finance Tracker</h1>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle dark mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="summary">
+            <div class="card credit-card">
+                <h3>Total Credits</h3>
+                <div id="totalCredits" class="amount">₹0.00</div>
+            </div>
+            <div class="card expense-card">
+                <h3>Total Expenses</h3>
+                <div id="totalExpenses" class="amount">₹0.00</div>
+            </div>
+            <div class="card balance-card">
+                <h3>Balance</h3>
+                <div id="balance" class="amount">₹0.00</div>
+            </div>
+        </div>
+
+        <!-- Credits Section -->
+        <div class="section">
+            <h2>💰 Credits</h2>
+            
+            <!-- Add Credit Form -->
+            <form id="creditForm" class="form">
+                <div class="form-row">
+                    <input type="date" id="creditDate" required>
+                    <input type="number" id="creditAmount" placeholder="Amount" step="0.01" required>
+                    <input type="text" id="creditFrom" placeholder="From whom" required>
+                    <button type="submit">Add Credit</button>
+                </div>
+            </form>
+
+            <!-- Credits Table -->
+            <div class="table-container">
+                <table id="creditsTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>From Whom</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="creditsTableBody">
+                        <!-- Credits will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Expenses Section -->
+        <div class="section">
+            <h2>💳 Expenses</h2>
+            
+            <!-- Add Expense Form -->
+            <form id="expenseForm" class="form">
+                <div class="form-row">
+                    <input type="date" id="expenseDate" required>
+                    <input type="text" id="expensePurpose" placeholder="Purpose of expense" required>
+                    <input type="number" id="expenseAmount" placeholder="Amount" step="0.01" required>
+                    <button type="submit">Add Expense</button>
+                </div>
+            </form>
+
+            <!-- Expenses Table -->
+            <div class="table-container">
+                <table id="expensesTable">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Purpose</th>
+                            <th>Amount</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expensesTableBody">
+                        <!-- Expenses will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Udhaar (Loans/Debts) Section -->
+        <div class="section">
+            <h2>📋 Udhaar Management</h2>
+            
+            <!-- Udhaar Summary -->
+            <div class="udhaar-summary">
+                <div class="card udhaar-given-card">
+                    <h3>Money Lent (Given)</h3>
+                    <div id="totalUdhaarGiven" class="amount">₹0.00</div>
+                </div>
+                <div class="card udhaar-taken-card">
+                    <h3>Money Borrowed (Taken)</h3>
+                    <div id="totalUdhaarTaken" class="amount">₹0.00</div>
+                </div>
+                <div class="card udhaar-balance-card">
+                    <h3>Net Udhaar</h3>
+                    <div id="netUdhaar" class="amount">₹0.00</div>
+                </div>
+            </div>
+
+            <!-- Add Udhaar Form -->
+            <form id="udhaarForm" class="form">
+                <div class="form-row">
+                    <input type="date" id="udhaarDate" required>
+                    <select id="udhaarType" required>
+                        <option value="">Select Type</option>
+                        <option value="given">Money Lent (Given)</option>
+                        <option value="taken">Money Borrowed (Taken)</option>
+                        <option value="received_back">Received Back (From someone)</option>
+                        <option value="paid_back">Paid Back (To someone)</option>
+                    </select>
+                    <input type="text" id="udhaarPerson" placeholder="Person's name" required>
+                    <input type="number" id="udhaarAmount" placeholder="Amount" step="0.01" required>
+                    <input type="text" id="udhaarPurpose" placeholder="Purpose/Description" required>
+                    <button type="submit">Add Transaction</button>
+                </div>
+            </form>
+
+            <!-- Person-wise Summary -->
+            <div class="person-summary-section">
+                <h3>� Person-wise Summary</h3>
+                <div id="personSummary" class="person-summary-grid">
+                    <!-- Person-wise summaries will be added here -->
+                </div>
+            </div>
+
+            <!-- Udhaar Transaction History -->
+            <div class="udhaar-tables">
+                <div class="table-section">
+                    <h3>📋 All Udhaar Transactions</h3>
+                    <div class="filter-section">
+                        <select id="personFilter">
+                            <option value="all">All Persons</option>
+                        </select>
+                        <select id="typeFilter">
+                            <option value="all">All Types</option>
+                            <option value="given">Money Lent</option>
+                            <option value="taken">Money Borrowed</option>
+                            <option value="received_back">Received Back</option>
+                            <option value="paid_back">Paid Back</option>
+                        </select>
+                        <button id="clearFilters" class="secondary-btn">Clear Filters</button>
+                    </div>
+                    <div class="table-container">
+                        <table id="udhaarHistoryTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Person</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                    <th>Purpose</th>
+                                    <th>Running Balance</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="udhaarHistoryTableBody">
+                                <!-- All udhaar transactions will be added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Individual Contact Management Modal -->
+        <div id="contactModal" class="modal">
+            <div class="modal-content contact-modal">
+                <div class="modal-header">
+                    <h3 id="contactModalTitle">Contact Details</h3>
+                    <span class="close" onclick="closeContactModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <!-- Contact Info -->
+                    <div class="contact-info">
+                        <div class="contact-avatar">
+                            <span id="contactInitials">AB</span>
+                        </div>
+                        <div class="contact-details">
+                            <h4 id="contactDisplayName">Contact Name</h4>
+                            <p id="contactDisplayPhone">Phone Number</p>
+                            <div class="contact-balance">
+                                <span id="contactBalance" class="balance-amount">₹0.00</span>
+                                <span id="contactBalanceText">Settled</span>
+                            </div>
+                        </div>
+                        <div class="contact-actions">
+                            <button id="editContactBtn" class="secondary-btn">Edit Contact</button>
+                            <button id="deleteContactBtn" class="danger-btn">Delete Contact</button>
+                        </div>
+                    </div>
+
+                    <!-- Quick Transaction Buttons -->
+                    <div class="quick-actions">
+                        <button id="lentMoneyBtn" class="lent-btn">You Lent ₹</button>
+                        <button id="borrowedMoneyBtn" class="borrowed-btn">You Borrowed ₹</button>
+                        <button id="receivedBackBtn" class="received-btn">You Got Back ₹</button>
+                        <button id="paidBackBtn" class="paid-btn">You Paid ₹</button>
+                    </div>
+
+                    <!-- Add Transaction Form -->
+                    <div id="transactionForm" class="transaction-form" style="display: none;">
+                        <h4 id="transactionFormTitle">Add Transaction</h4>
+                        <form id="contactTransactionForm">
+                            <input type="hidden" id="transactionContactId">
+                            <input type="hidden" id="transactionType">
+                            
+                            <div class="form-row">
+                                <label for="transactionDate">Date:</label>
+                                <input type="date" id="transactionDate" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <label for="transactionAmount">Amount:</label>
+                                <input type="number" id="transactionAmount" placeholder="Enter amount" step="0.01" required>
+                            </div>
+                            
+                            <div class="form-row">
+                                <label for="transactionPurpose">Purpose:</label>
+                                <input type="text" id="transactionPurpose" placeholder="What was this for?" required>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="save-btn">Save Transaction</button>
+                                <button type="button" class="cancel-btn" onclick="hideTransactionForm()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Contact Transaction History -->
+                    <div class="contact-history">
+                        <h4>Transaction History</h4>
+                        <div id="contactTransactionHistory" class="transaction-history-list">
+                            <!-- Contact's transactions will be listed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Edit Contact Modal -->
+        <div id="editContactModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Edit Contact</h3>
+                    <span class="close" onclick="closeEditContactModal()">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <form id="editContactForm">
+                        <input type="hidden" id="editContactId">
+                        
+                        <div class="form-row">
+                            <label for="editContactName">Name:</label>
+                            <input type="text" id="editContactName" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <label for="editContactPhone">Phone:</label>
+                            <input type="tel" id="editContactPhone">
+                        </div>
+                        
+                        <div class="modal-actions">
+                            <button type="submit" class="save-btn">Save Changes</button>
+                            <button type="button" class="cancel-btn" onclick="closeEditContactModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add New Contact Section -->
+        <div class="add-contact-section" style="margin-top: 20px;">
+            <h3>👤 Add New Contact</h3>
+            <form id="addContactForm">
+                <div class="form-row">
+                    <input type="text" id="contactName" placeholder="Contact Name" required>
+                    <input type="tel" id="contactPhone" placeholder="Phone Number (optional)">
+                    <button type="submit">Add Contact</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Contacts List -->
+        <div class="contacts-section" style="margin-top: 20px;">
+            <h3>📱 Your Contacts</h3>
+            <div id="contactsList" class="contacts-grid">
+                <!-- Contacts will be added here -->
+            </div>
+        </div>
+
+        <!-- Export/Import Section -->
+        <div class="section">
+            <h2>⚙️ Data Management</h2>
+            <div class="form-row">
+                <button id="exportData" class="secondary-btn">Export Data</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;">
+                <button id="importData" class="secondary-btn">Import Data</button>
+                <button id="clearData" class="danger-btn">Clear All Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Edit Entry</h3>
+                <span class="close" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editForm">
+                    <input type="hidden" id="editEntryId">
+                    <input type="hidden" id="editEntryType">
+                    
+                    <div class="form-row">
+                        <label for="editDate">Date:</label>
+                        <input type="date" id="editDate" required>
+                    </div>
+                    
+                    <div class="form-row" id="editAmountRow">
+                        <label for="editAmount">Amount:</label>
+                        <input type="number" id="editAmount" step="0.01" required>
+                    </div>
+                    
+                    <div class="form-row" id="editFromRow">
+                        <label for="editFrom">From Whom:</label>
+                        <input type="text" id="editFrom" required>
+                    </div>
+                    
+                    <div class="form-row" id="editPurposeRow">
+                        <label for="editPurpose">Purpose:</label>
+                        <input type="text" id="editPurpose" required>
+                    </div>
+                    
+                    <div class="form-row" id="editPersonRow">
+                        <label for="editPerson">Person:</label>
+                        <input type="text" id="editPerson" required>
+                    </div>
+                    
+                    <div class="form-row" id="editUdhaarTypeRow">
+                        <label for="editUdhaarType">Type:</label>
+                        <select id="editUdhaarType" required>
+                            <option value="given">Money Lent (Given)</option>
+                            <option value="taken">Money Borrowed (Taken)</option>
+                            <option value="received_back">Received Back (From someone)</option>
+                            <option value="paid_back">Paid Back (To someone)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="submit" class="save-btn">Save Changes</button>
+                        <button type="button" class="cancel-btn" onclick="closeEditModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

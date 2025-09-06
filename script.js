@@ -59,6 +59,13 @@ const netUdhaarEl = document.getElementById('netUdhaar');
 const personSummaryEl = document.getElementById('personSummary');
 const personFilterEl = document.getElementById('personFilter');
 const typeFilterEl = document.getElementById('typeFilter');
+// Date filter elements
+const creditStartDateEl = document.getElementById('creditStartDate');
+const creditEndDateEl = document.getElementById('creditEndDate');
+const expenseStartDateEl = document.getElementById('expenseStartDate');
+const expenseEndDateEl = document.getElementById('expenseEndDate');
+const udhaarStartDateEl = document.getElementById('udhaarStartDate');
+const udhaarEndDateEl = document.getElementById('udhaarEndDate');
 
 // Contact Management DOM Elements
 const addContactForm = document.getElementById('addContactForm');
@@ -122,10 +129,21 @@ function setupEventListeners() {
     if (typeFilterEl) {
         typeFilterEl.addEventListener('change', filterUdhaarTransactions);
     }
+    // Date range listeners
+    if (creditStartDateEl) creditStartDateEl.addEventListener('change', renderCreditsTable);
+    if (creditEndDateEl) creditEndDateEl.addEventListener('change', renderCreditsTable);
+    if (expenseStartDateEl) expenseStartDateEl.addEventListener('change', renderExpensesTable);
+    if (expenseEndDateEl) expenseEndDateEl.addEventListener('change', renderExpensesTable);
+    if (udhaarStartDateEl) udhaarStartDateEl.addEventListener('change', renderUdhaarHistoryTable);
+    if (udhaarEndDateEl) udhaarEndDateEl.addEventListener('change', renderUdhaarHistoryTable);
     const clearFiltersBtn = document.getElementById('clearFilters');
     if (clearFiltersBtn) {
         clearFiltersBtn.addEventListener('click', clearFilters);
     }
+    const clearCreditDateBtn = document.getElementById('clearCreditDateFilters');
+    if (clearCreditDateBtn) clearCreditDateBtn.addEventListener('click', clearCreditDateFilters);
+    const clearExpenseDateBtn = document.getElementById('clearExpenseDateFilters');
+    if (clearExpenseDateBtn) clearExpenseDateBtn.addEventListener('click', clearExpenseDateFilters);
     
     // Data management buttons
     document.getElementById('exportData').addEventListener('click', exportData);
@@ -836,8 +854,23 @@ function renderCreditsTable() {
         return;
     }
     
+    // Filter by date range if provided
+    let filtered = [...credits];
+    if (creditStartDateEl && creditStartDateEl.value) {
+        const start = new Date(creditStartDateEl.value);
+        filtered = filtered.filter(c => new Date(c.date) >= start);
+    }
+    if (creditEndDateEl && creditEndDateEl.value) {
+        const end = new Date(creditEndDateEl.value);
+        end.setHours(23,59,59,999);
+        filtered = filtered.filter(c => new Date(c.date) <= end);
+    }
+    if (filtered.length === 0) {
+        creditsTableBody.innerHTML = '<tr><td colspan="4" class="no-data">No credits in this date range.</td></tr>';
+        return;
+    }
     // Sort credits by date (newest first)
-    const sortedCredits = [...credits].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedCredits = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
     
     creditsTableBody.innerHTML = sortedCredits.map(credit => `
         <tr>
@@ -859,8 +892,23 @@ function renderExpensesTable() {
         return;
     }
     
+    // Filter by date range if provided
+    let filtered = [...expenses];
+    if (expenseStartDateEl && expenseStartDateEl.value) {
+        const start = new Date(expenseStartDateEl.value);
+        filtered = filtered.filter(c => new Date(c.date) >= start);
+    }
+    if (expenseEndDateEl && expenseEndDateEl.value) {
+        const end = new Date(expenseEndDateEl.value);
+        end.setHours(23,59,59,999);
+        filtered = filtered.filter(c => new Date(c.date) <= end);
+    }
+    if (filtered.length === 0) {
+        expensesTableBody.innerHTML = '<tr><td colspan="4" class="no-data">No expenses in this date range.</td></tr>';
+        return;
+    }
     // Sort expenses by date (newest first)
-    const sortedExpenses = [...expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedExpenses = filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
     
     expensesTableBody.innerHTML = sortedExpenses.map(expense => `
         <tr>
@@ -992,6 +1040,16 @@ function renderUdhaarHistoryTable() {
     if (currentTypeFilter !== 'all') {
         filteredUdhaar = filteredUdhaar.filter(entry => entry.type === currentTypeFilter);
     }
+    // Apply date range filter
+    if (udhaarStartDateEl && udhaarStartDateEl.value) {
+        const start = new Date(udhaarStartDateEl.value);
+        filteredUdhaar = filteredUdhaar.filter(e => new Date(e.date) >= start);
+    }
+    if (udhaarEndDateEl && udhaarEndDateEl.value) {
+        const end = new Date(udhaarEndDateEl.value);
+        end.setHours(23,59,59,999);
+        filteredUdhaar = filteredUdhaar.filter(e => new Date(e.date) <= end);
+    }
     
     if (filteredUdhaar.length === 0) {
         const noDataMessage = currentPersonFilter !== 'all' || currentTypeFilter !== 'all' ? 
@@ -1061,7 +1119,22 @@ function filterUdhaarTransactions() {
 function clearFilters() {
     personFilterEl.value = 'all';
     typeFilterEl.value = 'all';
+    if (udhaarStartDateEl) udhaarStartDateEl.value = '';
+    if (udhaarEndDateEl) udhaarEndDateEl.value = '';
     renderUdhaarHistoryTable();
+}
+
+// Clear date filters helpers
+function clearCreditDateFilters() {
+    if (creditStartDateEl) creditStartDateEl.value = '';
+    if (creditEndDateEl) creditEndDateEl.value = '';
+    renderCreditsTable();
+}
+
+function clearExpenseDateFilters() {
+    if (expenseStartDateEl) expenseStartDateEl.value = '';
+    if (expenseEndDateEl) expenseEndDateEl.value = '';
+    renderExpensesTable();
 }
 
 // Render all tables

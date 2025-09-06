@@ -925,6 +925,10 @@ select:focus {
     max-width: 200px;
 }
 
+.filter-section input[type="date"] {
+    min-width: 160px;
+}
+
 /* Transaction Type Styles */
 .type-given {
     background: #fd7e14;

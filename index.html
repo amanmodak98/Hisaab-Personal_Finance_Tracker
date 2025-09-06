@@ -45,6 +45,13 @@
                 </div>
             </form>
 
+            <!-- Credits Date Filter -->
+            <div class="filter-section">
+                <input type="date" id="creditStartDate" placeholder="Start date">
+                <input type="date" id="creditEndDate" placeholder="End date">
+                <button id="clearCreditDateFilters" class="secondary-btn">Clear Date</button>
+            </div>
+
             <!-- Credits Table -->
             <div class="table-container">
                 <table id="creditsTable">
@@ -76,6 +83,13 @@
                     <button type="submit">Add Expense</button>
                 </div>
             </form>
+
+            <!-- Expenses Date Filter -->
+            <div class="filter-section">
+                <input type="date" id="expenseStartDate" placeholder="Start date">
+                <input type="date" id="expenseEndDate" placeholder="End date">
+                <button id="clearExpenseDateFilters" class="secondary-btn">Clear Date</button>
+            </div>
 
             <!-- Expenses Table -->
             <div class="table-container">
@@ -156,6 +170,8 @@
                             <option value="received_back">Received Back</option>
                             <option value="paid_back">Paid Back</option>
                         </select>
+                        <input type="date" id="udhaarStartDate" placeholder="Start date">
+                        <input type="date" id="udhaarEndDate" placeholder="End date">
                         <button id="clearFilters" class="secondary-btn">Clear Filters</button>
                     </div>
                     <div class="table-container">
